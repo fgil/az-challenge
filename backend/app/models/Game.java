@@ -14,7 +14,6 @@ import com.googlecode.objectify.annotation.Unindexed;
 import enums.GameStates;
 import enums.Messages;
 import exceptions.GameException;
-import models.output.ResultOutput;
 import play.modules.objectify.ObjectifyModel;
 
 @Entity
@@ -64,42 +63,42 @@ public class Game extends ObjectifyModel {
   @Unindexed
   public Date finishedAt;
 
-  private Game(){
-    //required to load from the database
+  private Game() {
+    // required to load from the database
   }
 
-  public Game(String user, boolean isMultiplayer, int positions, String options){
+  public Game(String user, boolean isMultiplayer, int positions, String options) {
     this.userA = user;
     generateAnswer(positions, options);
     setMode(isMultiplayer);
   }
 
-  private void generateAnswer(int positions, String options){
+  private void generateAnswer(int positions, String options) {
     this.positions = positions;
     this.options = options;
     answer = "";
-    for(int i=0; i<positions; i++){
-      int letter = (int)(Math.random() * positions);
-      answer += options.substring(letter, letter+1);
+    for (int i = 0; i < positions; i++) {
+      int letter = (int) (Math.random() * positions);
+      answer += options.substring(letter, letter + 1);
     }
   }
 
-  private void setMode(boolean isMultiplayer){
+  private void setMode(boolean isMultiplayer) {
     this.isMultiplayer = isMultiplayer;
-    if(isMultiplayer == false){
+    if (isMultiplayer == false) {
       start();
     } else {
       state = GameStates.CREATED;
     }
   }
 
-  private void start(){
+  private void start() {
     startedAt = new Date();
     state = GameStates.STARTED;
   }
 
-  public void addOpponent(String user) throws GameException{
-    if(isMultiplayer == false){
+  public void addOpponent(String user) throws GameException {
+    if (isMultiplayer == false) {
       throw new GameException(Messages.NOT_MULTIPLAYER);
     }
 
@@ -107,48 +106,48 @@ public class Game extends ObjectifyModel {
     start();
   }
 
-  public List<Guess> getGuesses(String user) throws GameException{
-    if(userA.equals(user)){
+  public List<Guess> getGuesses(String user) throws GameException {
+    if (userA.equals(user)) {
       return guessesA;
-    } else if(userB.equals(user)){
+    } else if (userB.equals(user)) {
       return guessesB;
     } else {
       throw new GameException(Messages.NOT_A_PLAYER);
     }
   }
 
-  public List<Guess> getOpponentGuesses(String user) throws GameException{
-    if(userA.equals(user)){
+  public List<Guess> getOpponentGuesses(String user) throws GameException {
+    if (userA.equals(user)) {
       return guessesB;
-    } else if(userB.equals(user)){
+    } else if (userB.equals(user)) {
       return guessesA;
     } else {
       throw new GameException(Messages.NOT_A_PLAYER);
     }
   }
 
-  public void addGuess(Guess guess, String user) throws GameException{
+  public void addGuess(Guess guess, String user) throws GameException {
 
-    if(state == GameStates.CREATED){
+    if (state == GameStates.CREATED) {
       throw new GameException(Messages.GAME_NOT_STARTED);
     }
 
-    if(state == GameStates.STARTED) {
+    if (state == GameStates.STARTED) {
 
       // Test guess
       char[] a = answer.toCharArray();
 
-      for(int i=0; i<positions; i++){
-        if(guess.guess.charAt(i) == a[i]){
+      for (int i = 0; i < positions; i++) {
+        if (guess.guess.charAt(i) == a[i]) {
           guess.exact++;
           a[i] = '$';
         }
       }
 
-      for(int i=0; i<positions; i++){
-        if(a[i] != '$'){
-          for(int j=0; j<positions; j++){
-            if(guess.guess.charAt(i) == a[j]){
+      for (int i = 0; i < positions; i++) {
+        if (a[i] != '$') {
+          for (int j = 0; j < positions; j++) {
+            if (guess.guess.charAt(i) == a[j]) {
               guess.near++;
               a[j] = '#';
               break;
@@ -160,7 +159,7 @@ public class Game extends ObjectifyModel {
       getGuesses(user).add(guess);
 
       // Is the game finished?
-      if(guess.exact == positions){
+      if (guess.exact == positions) {
         finishedAt = new Date();
         state = GameStates.FINISHED;
         winner = user;

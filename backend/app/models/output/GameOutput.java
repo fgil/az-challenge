@@ -9,7 +9,7 @@ import models.Guess;
 public class GameOutput {
 
   public final int code_length = 8;
-  public final String[] colors = {"R", "B", "G", "Y", "P", "O", "C", "M"};
+  public final String[] colors = { "R", "B", "G", "Y", "P", "O", "C", "M" };
   public String game_key;
   public String guess;
   public int num_guesses;

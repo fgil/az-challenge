@@ -22,13 +22,13 @@ public class GameController extends Controller {
   public static final int positions = 8;
   public static final String options = "RBGYPOCM";
 
-  public static void newGame(String body){
+  public static void newGame(String body) {
 
     // Get input
     NewGameInput input = new Gson().fromJson(body, NewGameInput.class);
 
     // Check user
-    if(input.user == null){
+    if (input.user == null) {
       renderJSON(new ResultOutput(Messages.IDENTIFY_YOURSELF));
     }
 
@@ -45,20 +45,20 @@ public class GameController extends Controller {
     renderJSON(new Gson().toJson(output));
   }
 
-  public static void join(String body){
+  public static void join(String body) {
 
     // Get input
     JoinInput input = new Gson().fromJson(body, JoinInput.class);
 
     // Load game
     Game game = Datastore.find(Game.class, Long.parseLong(input.game_key));
-    if(game == null){
+    if (game == null) {
       renderJSON(new ResultOutput(Messages.GAME_NOT_FOUND));
     }
 
-    try{
+    try {
       game.addOpponent(input.user);
-    } catch(GameException e){
+    } catch (GameException e) {
       renderJSON(new ResultOutput(e.getMessage()));
     }
 
@@ -74,14 +74,14 @@ public class GameController extends Controller {
     renderJSON(new Gson().toJson(output));
   }
 
-  public static void gameState(String body){
+  public static void gameState(String body) {
 
     // Get input
     GameStateInput input = new Gson().fromJson(body, GameStateInput.class);
 
     // Load game
     Game game = Datastore.find(Game.class, Long.parseLong(input.game_key));
-    if(game == null){
+    if (game == null) {
       renderJSON(new ResultOutput(Messages.GAME_NOT_FOUND));
     }
 
@@ -90,12 +90,12 @@ public class GameController extends Controller {
     output.game_key = game.id.toString();
     output.game_state = game.state;
     output.is_multiplayer = game.isMultiplayer;
-    if(game.state != GameStates.CREATED){
+    if (game.state != GameStates.CREATED) {
       output.players = String.format(Messages.VS, game.userA, game.userB);
     }
-    if(game.state == GameStates.FINISHED){
+    if (game.state == GameStates.FINISHED) {
       output.solved = String.valueOf(true);
-      output.time_taken = (double)(game.finishedAt.getTime() - game.startedAt.getTime())/1000;
+      output.time_taken = (double) (game.finishedAt.getTime() - game.startedAt.getTime()) / 1000;
       output.result = String.format(Messages.WINNER, game.winner);
     }
 
@@ -103,7 +103,7 @@ public class GameController extends Controller {
     renderJSON(new Gson().toJson(output));
   }
 
-  public static void guess(String body){
+  public static void guess(String body) {
 
     // Get input
     GuessInput input = new Gson().fromJson(body, GuessInput.class);
@@ -113,7 +113,7 @@ public class GameController extends Controller {
 
     // Load game
     Game game = Datastore.find(Game.class, Long.parseLong(input.game_key));
-    if(game == null){
+    if (game == null) {
       renderJSON(new ResultOutput(Messages.GAME_NOT_FOUND));
     }
 
@@ -140,11 +140,11 @@ public class GameController extends Controller {
       result.near = guess.near;
       output.result = result;
 
-      if(game.state == GameStates.FINISHED){
+      if (game.state == GameStates.FINISHED) {
         output.solved = String.valueOf(true);
-        output.time_taken = (double)(game.finishedAt.getTime() - game.startedAt.getTime())/1000;
+        output.time_taken = (double) (game.finishedAt.getTime() - game.startedAt.getTime()) / 1000;
         output.past_results_opponent = game.getOpponentGuesses(input.user);
-        if(game.winner.equals(input.user)){
+        if (game.winner.equals(input.user)) {
           output.result = Messages.YOU_WIN;
         } else {
           output.result = Messages.YOU_LOSE;
@@ -154,7 +154,7 @@ public class GameController extends Controller {
       // Return
       renderJSON(new Gson().toJson(output));
 
-    } catch(GameException e){
+    } catch (GameException e) {
       Datastore.rollbackAll();
       renderJSON(new ResultOutput(e.getMessage()));
     }
