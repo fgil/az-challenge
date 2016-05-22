@@ -63,6 +63,7 @@ public class Game extends ObjectifyModel {
   @Unindexed
   public Date finishedAt;
 
+  @SuppressWarnings("unused")
   private Game() {
     // required to load from the database
   }
