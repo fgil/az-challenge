@@ -1,0 +1,17 @@
+# Application dependencies
+
+require:
+    - objectify -> objectify 1.1
+    - gae -> gae 1.9.6
+    
+repositories:
+    - objectify:
+        type: local
+        artifact: "${application.path}/dependencies/objectify-1.1"
+        contains:
+            - objectify -> *
+    - gae:
+        type: local
+        artifact: "${application.path}/dependencies/gae-1.9.6"
+        contains:
+            - gae -> *

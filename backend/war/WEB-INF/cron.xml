@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+
+  <cron>
+    <url>/clean</url>
+    <description>Clean all games that started more than 24 hours ago</description>
+    <schedule>every 1 hours</schedule>
+    <timezone>America/Sao_Paulo</timezone>
+  </cron>
+</cronentries>

@@ -1,0 +1,15 @@
+# Routes
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# GENERAL ROUTES
+# This file defines all application routes (Higher priority routes first)
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+GET			/								AdminController.home
+
+POST		/clean							AdminController.clean
+POST		/new_game						GameController.newGame
+POST		/join							GameController.join
+POST		/guess							GameController.guess
+POST		/game_state						GameController.gameState
+
+GET			/public/						staticDir:public
